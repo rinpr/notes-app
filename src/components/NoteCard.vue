@@ -34,11 +34,11 @@ const emit = defineEmits<{
 }>()
 
 const deleteNoteModal = () => {
-    emit("showdeletemodal", props.note)
+    emit('showdeletemodal', props.note)
 }
 
 const editNoteModal = () => {
-    emit("showeditmodal", props.note)
+    emit('showeditmodal', props.note)
 }
 </script>
 

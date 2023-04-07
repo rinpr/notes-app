@@ -6,7 +6,7 @@
         </div>
         <div>
             <h2> Title </h2>
-            <p> points</p>
+            <p> points </p>
         </div>
 
     </div>

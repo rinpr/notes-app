@@ -37,20 +37,27 @@
                 </DialogTitle>
                 <div class="mt-2">
                     <div>Title</div>
-                  <input type="text" class="border-w-2px border-gray-500 w-full outline-none p-1 rounded">
+                  <input type="text" v-model="title" class="border-w-2px border-gray-500 w-full outline-none p-1 rounded">
                 </div>
                 <div class="mt-2">
                     <div>points</div>
-                    <textarea n class="border-w-2px border-gray-500 w-full outline-none p-1 rounded"></textarea>
+                    <textarea v-model="point" class="border-w-2px border-gray-500 w-full outline-none p-1 rounded"></textarea>
                 </div>
   
                 <div class="mt-4 flex flex-row-reverse">
                   <button
-                    type="button"
-                    class="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-                    @click="closeModal"
+                    type="button" v-if="!edit"
+                    class="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                    @click="saveNote"
                   >
                     Save
+                  </button>
+                  <button
+                    type="button" v-else
+                    class="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                    @click="editNote"
+                  >
+                    Edit
                   </button>
                   <button
                     type="button"
@@ -77,28 +84,61 @@
     DialogPanel,
     DialogTitle,
   } from '@headlessui/vue'
+  import { newNote, Note } from '../common.interfance';
   
   const isOpen = ref(false)
+  const title = ref("")
+  const point = ref("")
 
   interface Props {
-    openModal: boolean
+    openModal: boolean,
+    note: Note,
+    edit: boolean
   }
 
   const props = withDefaults(defineProps<Props>(), {
-    openModal: false
+    openModal: false,
+    edit: false
   })
 
   const emit = defineEmits<{
-    (e: 'showModal', id: boolean): void
+    (e: 'showmodal', id: boolean): void
+    (e: 'savenote', value: newNote): void
+    (e: 'editnote', value: Note): void
   }>()
 
   watch(props,()=>{
     isOpen.value = props.openModal
+    title.value = props.note.title
+    point.value = props.note.point
   })
   
   function closeModal() {
-    emit("showModal", false)
+    emit("showmodal", false)
     isOpen.value = false
+  }
+
+  const saveNote = () => {
+    emit("showmodal", false)
+    let newnote = {
+        title:title.value,
+        point:point.value
+    }
+    title.value = ''
+    point.value = ''
+    emit("savenote", newnote)
+  }
+
+  const editNote = () => {
+    emit("showmodal", false)
+    let newnote = {
+        id:props.note.id,
+        title:title.value,
+        point:point.value
+    }
+    title.value = ''
+    point.value = ''
+    emit("editnote", newnote)
   }
   </script>
   
